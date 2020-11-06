@@ -13,7 +13,6 @@ QtOSGWidget::QtOSGWidget(qreal scaleX, qreal scaleY, QWidget* parent)
 
         try{
             //initialize camera
-        std::cout<<this->width()<<" "<<this->height();
         camera = new osg::Camera;
         camera->setViewport( this->x(), this->y(), this->width(), this->height() );
         camera->setClearColor( osg::Vec4( 0.9f, 0.9f, 1.f, 1.f ) );
@@ -177,6 +176,11 @@ void QtOSGWidget::setScale(qreal X, qreal Y)
        program->addShader(fragShader);
 
 
+       osg::ref_ptr<osg::BlendFunc> blendFunc = new osg::BlendFunc;
+       blendFunc->setFunction( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+       stateSet->setRenderingHint( osg::StateSet::TRANSPARENT_BIN );
+
+       stateSet->setAttributeAndModes( blendFunc );
 
        stateSet->setAttributeAndModes(program.get(), osg::StateAttribute::ON);
        stateSet->setMode(GL_DEPTH_TEST,osg::StateAttribute::ON);

@@ -1,22 +1,33 @@
 #version 440
 
-
-uniform mat4 osg_ModelViewProjectionMatrix; 
-
-layout(location = 0) in vec3 osg_Vertex;
-layout(location = 1) in vec3 osg_Normal;
-layout(location = 2) in vec4 osg_Color; 
+in VertexData{
+    vec4 mColor;
+} VertexIn[];
 
 out VertexData{
     vec4 mColor;
+     // to pass in case if we use fog effect
+} VertexOut; 
 
-} VertexOut;
+layout(triangles) in;
+layout(triangle_strip, max_vertices = 6) out;
+
 
 void main(void)
 {
-    vec4 red = vec4(osg_Normal,1.0);
-    //VertexOut.mColor = red*(dot(osg_Normal,vec3(0.0,0.0,1.0)));
-    //VertexOut.mVertex = vec4(osg_Vertex,1);
-VertexOut.mColor = red;
-    gl_Position = osg_ModelViewProjectionMatrix * vec4(osg_Vertex,1);
-}  
+    float fac = length(cross(normalize(cross(gl_in[0].gl_Position.xyz - gl_in[1].gl_Position.xyz,gl_in[0].gl_Position.xyz - gl_in[2].gl_Position.xyz)),vec3(0.f,0.f,1.f)));
+    
+    VertexOut.mColor = fac*VertexIn[0].mColor;
+    gl_Position = gl_in[0].gl_Position;
+    EmitVertex();
+    
+    VertexOut.mColor = fac*VertexIn[1].mColor;
+    gl_Position = gl_in[1].gl_Position;
+    EmitVertex();
+    
+    VertexOut.mColor = fac*VertexIn[2].mColor;
+    gl_Position = gl_in[2].gl_Position;
+    EmitVertex();
+    
+    EndPrimitive();
+}

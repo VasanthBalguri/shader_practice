@@ -14,8 +14,9 @@ out VertexData{
 
 void main(void)
 {
-    vec4 red = vec4(1.0,1.0,1.0,1.0);
-    VertexOut.mColor = red*(dot(osg_Normal,vec3(0.0,0.0,1.0)));
+    vec4 red = vec4(osg_Normal,1.0);
+    //VertexOut.mColor = red*(dot(osg_Normal,vec3(0.0,0.0,1.0)));
     //VertexOut.mVertex = vec4(osg_Vertex,1);
+VertexOut.mColor = red;
     gl_Position = osg_ModelViewProjectionMatrix * vec4(osg_Vertex,1);
 }  
